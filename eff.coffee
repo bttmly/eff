@@ -9,26 +9,27 @@ min0 = ( num ) ->
 
 curry = ( fn ) ->
   # outer = [].slice.call arguments
-  len = arguments.length
+  len = arguments.length - 1
   outer = new Array len
-  outer[i] = arg for arg, i in arguments when i > 0
+  outer[i - 1] = arg for arg, i in arguments when i > 0
   curried = ->
     # args = outer.slice().concat [].slice.call arguments
     outerLen = outer.length
-    len = arguments.length + outer.length
+    len = arguments.length + outerLen
     args = new Array len
     args[i] = outerArg for outerArg, i in outer
-    args[outerLen + i] = arg for arg, i in arguments
+    args[outerLen + j] = arg for arg, j in arguments
     if args.length >= fn.length
       fn.apply this, args
     else
       curry.apply null, [fn].concat args
-  arity curried, min0 fn.length - len
+  count = min0 fn.length - len
+  arity curried, count
 
 partial = ( fn ) ->
-  len = arguments.length
+  len = arguments.length - 1
   outer = new Array len
-  outer[i] = arg for arg, i in arguments when i > 0
+  outer[i - 1] = arg for arg, i in arguments when i > 0
   func = ->
     outerLen = outer.length
     len = arguments.length + outer.length
@@ -38,56 +39,23 @@ partial = ( fn ) ->
     fn.apply this, args
   arity func, min0 fn.length - outer.length
 
-partialRight = ( fn ) ->
-  len = arguments.length
+partialConstructor = ( Ctor ) ->
+  len = arguments.length - 1
   outer = new Array len
-  outer[i] = arg for arg, i in arguments when i > 0
+  outer[i - 1] = arg for arg, i in arguments when i > 0
   func = ->
-    innerLen = arguments.length
+    outerLen = outer.length
     len = arguments.length + outer.length
     args = new Array len
-    args[i] = arg for arg, i in arguments
-    args[innerLen + i] = outerArg for outerArg, i in arguments
-  arity func, min0 fn.length - outer.length
-
-partialConstructor = ( Ctor ) ->
-  outer = []
-  outer.push arg for arg in arguments when i > 0
-  func = ->
-    args = outer.slice()
-    args.push arg for arg in arguments
+    args[i] = outerArg for outerArg, i in outer
+    args[outerLen + i] = arg for arg, i in arguments
     obj = Object.create Ctor::
-    result = fn.apply obj, args
-    if result and typeof result is "object"
+    result = Ctor.apply obj, args
+    if result and typeof result is "object" or typeof result is "function"
       result
     else
       obj
-  arity func, min0 fn.length - outer.length
-
-flip = ( fn ) ->
-  swap fn, 0, 1
-
-reverse = ( fn ) ->
-  func = ->
-    len = arguments.length
-    args = new Array len
-    args[i] = arg for arg, i in arguments by -1
-    fn.apply this, args.reverse()
-  arity func, fn.length
-
-firstToLast = ( fn ) ->
-  func = ->
-    args = ( arg for arg in arguments )
-    args.push args.shift()
-    fn.apply this, args
-  arity func, fn.length
-
-lastToFirst = ( fn ) ->
-  func = ->
-    args = ( arg for arg in arguments )
-    args.unshift args.pop()
-    fn.apply this, args
-  arity func, fn.length
+  arity func, min0 Ctor.length - outer.length
 
 swap = ( fn, p1, p2 ) ->
   func = ->
@@ -98,8 +66,32 @@ swap = ( fn, p1, p2 ) ->
     fn.apply this, args
   arity func, fn.length
 
-unary = ( fn ) ->
-  flip nAry
+flip = ( fn ) ->
+  swap fn, 0, 1
+
+rotate = ( fn, count, dir = 1 ) ->
+  throw new RangeError "direction parameter must be 1 or -1" unless dir is 1 or dir is -1
+  func = ->
+    len = arguments.length
+    args = new Array len
+    args[i] = arg for arg, i in arguments
+    chunk = args.splice ( if dir is 1 then 0 else dir * count ), count
+    fn.apply this, if dir is 1 then args.concat( chunk ) else chunk.concat( args )
+  arity func, fn.length
+
+firstToLast = ( fn ) ->
+  rotate fn, 1
+
+lastToFirst = ( fn ) ->
+  rotate fn, 1, -1
+
+reverse = ( fn ) ->
+  func = ->
+    len = arguments.length
+    args = new Array len
+    args[i] = arg for arg, i in arguments by -1
+    fn.apply this, args.reverse()
+  arity func, fn.length
 
 demethodize = ( fn ) ->
   func = ( context ) ->
@@ -161,6 +153,12 @@ arity = ( fn, n ) ->
   else
     throw new RangeError "Function must take 10 or fewer arguments"
 
+unary = ( fn ) ->
+  nAry fn, 1
+
+binary = ( fn ) ->
+  nAry fn, 2
+
 module.exports =
   curry: curry
   arity: arity
@@ -172,6 +170,7 @@ module.exports =
   reverse: reverse
   partial: partial
   partialConstructor: partialConstructor
+  rotate: rotate
   firstToLast: firstToLast
   lastToFirst: lastToFirst
 
