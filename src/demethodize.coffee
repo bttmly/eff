@@ -1,4 +1,4 @@
-arity = require "./arity.coffee"
+arity = require "./arity"
 
 module.exports = demethodize = ( fn, newArity ) ->
   func = ( context ) ->

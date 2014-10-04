@@ -1,3 +1,3 @@
-rotate = require "./rotate.coffee"
+rotate = require "./rotate"
 
-module.exports = lastToFirst = ( fn ) -> rotate fn, 1, 1
+module.exports = lastToFirst = ( fn ) -> rotate fn, 1, -1

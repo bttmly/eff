@@ -1,3 +1,3 @@
-nAry = require "./nAry.coffee"
+nAry = require "./n-ary"
 
 module.exports = binary = ( fn ) -> nAry fn, 2

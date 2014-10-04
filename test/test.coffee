@@ -13,7 +13,7 @@ should = require( "chai" ).should()
   unary,
   binary,
   arity,
-  nAry } = require "./eff.coffee"
+  nAry } = require "../src/index.coffee"
 
 addTwo = (a, b) ->
   a + b

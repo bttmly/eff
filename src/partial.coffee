@@ -1,3 +1,5 @@
+arity = require "./arity"
+
 partial = ( fn ) ->
   len = arguments.length - 1
   outer = new Array len

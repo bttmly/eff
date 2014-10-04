@@ -1,4 +1,4 @@
-swap = require "./swap.coffee"
+swap = require "./swap"
 
-flip = ( fn ) ->
+module.exports = flip = ( fn ) ->
   swap fn, 0, 1

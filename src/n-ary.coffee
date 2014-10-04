@@ -1,1 +1,1 @@
-module.exports = require "./n-ary5.coffee"
+module.exports = require "./n-ary-10"

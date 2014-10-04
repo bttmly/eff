@@ -1,4 +1,4 @@
-arity = require "./arity.coffee"
+arity = require "./arity"
 
 module.exports = curry = ( fn ) ->
   len = arguments.length - 1

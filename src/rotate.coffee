@@ -1,4 +1,4 @@
-arity = require "./arity.coffee"
+arity = require "./arity"
 
 module.exports = rotate = ( fn, count, dir = 1 ) ->
   throw new RangeError "direction parameter must be 1 or -1" unless dir is 1 or dir is -1
