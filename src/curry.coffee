@@ -14,5 +14,4 @@ module.exports = curry = ( fn ) ->
       fn.apply this, args
     else
       curry.apply null, [fn].concat args
-  l = fn.length - len
-  arity curried, if l > 0 then l else 0
+  arity curried, fn.length - len

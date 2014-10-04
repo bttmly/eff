@@ -1,11 +1,7 @@
 merge = ( target ) ->
   for source, i in arguments when i > 0
-    for own key of source
-      target[key] = source[key]
+    target[key] = source[key] for own key of source
   target
-
-min0 = ( num ) ->
-  if num < 0 then 0 else num
 
 curry = ( fn ) ->
   # outer = [].slice.call arguments
@@ -153,8 +149,7 @@ arity = ( fn, n ) ->
   else
     throw new RangeError "Function must take 10 or fewer arguments"
 
-unary = ( fn ) ->
-  nAry fn, 1
+unary = ( fn ) -> nAry fn, 1
 
 binary = ( fn ) ->
   nAry fn, 2

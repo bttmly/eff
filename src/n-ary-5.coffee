@@ -1,4 +1,5 @@
 module.exports = nAry5 = ( fn, n ) ->
+  n = 0 unless n > 0
   if n is 0
     -> fn.call this
   else if n is 1
