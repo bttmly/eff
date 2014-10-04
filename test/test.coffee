@@ -240,7 +240,7 @@ describe "arity", ->
 
 describe "nAry", ->
   it "should returna  function with length 'n' and pass through only first 'n' arguments", ->
-    addArity2 = nAry addAll, 2
-    addArity2.length.should.equal 2
-    addArity2( 1, 2 ).should.equal 3
-    addArity2( 1, 2, 3 ).should.equal 3
+    addNAry2 = nAry addAll, 2
+    addNAry2.length.should.equal 2
+    addNAry2( 1, 2 ).should.equal 3
+    addNAry2( 1, 2, 3 ).should.equal 3
