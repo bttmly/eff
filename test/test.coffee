@@ -3,7 +3,6 @@ should = require( "chai" ).should()
 
 { curry,
   partial,
-  partialRight,
   partialConstructor,
   flip,
   swap,
@@ -12,6 +11,7 @@ should = require( "chai" ).should()
   lastToFirst,
   unary,
   binary,
+  rotate,
   arity,
   nAry } = require "../src/index.coffee"
 
@@ -23,6 +23,9 @@ addThree = (a, b, c) ->
 
 addFour = (a, b, c, d) ->
   a + b + c + d
+
+addAll = (a, b, c, d) ->
+  [].slice.call( arguments ).reduce ( s, t ) -> s + t
 
 map = ( arr, cb ) ->
   cb item, i, arr for item, i in arr
@@ -47,6 +50,9 @@ describe "curry()", ->
 
   it "should return a function always", ->
     curry( addFour, 1, 2, 3, 4 ).should.be.a "function"
+    curry( addFour, 1, 2, 3, 4 )().should.equal 10
+    curry( addFour, 1, 2, 3, 4, 5 ).should.be.a "function"
+    curry( addFour, 1, 2, 3, 4, 5 )().should.equal 10
 
   it "should return functions which continue to return functions until their arguments are filled", ->
     curryAddFour.should.be.a "function"
@@ -61,13 +67,14 @@ describe "curry()", ->
     fourteen.should.equal 14
     fifteen.should.equal 15
 
-  it "should return functions with the proper length", ->
+  it "should return functions with length equal to remaining unfilled arguments", ->
     curryAddFour.length.should.equal 4
     curryAddFour_1.length.should.equal 3
     curryAddFour_1_2.length.should.equal 2
     curryAddFour_1_2_3.length.should.equal 1
     curryAddFour_1_2_3_4 = curry addFour, 1, 2, 3, 4
     curryAddFour_1_2_3_4.length.should.equal 0
+    curryAddFour_1_2_3_4().should.equal 10
 
 describe "swap", ->
   contrived = (a, b, c, d, e, f, g, h) -> c + h
@@ -90,8 +97,25 @@ describe "flip", ->
   it "should preserve the arity of the original function", ->
     flip( ( a, b, c, d, e, f ) -> ).length.should.equal 6
 
-describe "partialConstructor", ->
+describe "partial", ->
+  it "should partially apply arguments to a function", ->
+    partial( addFour, 1 )( 2, 3, 4 ).should.equal 10
+    partial( addFour, 1, 2 )( 3, 4 ).should.equal 10
 
+  it "should return a partially applied function with length equal to number of additional expected arguments", ->
+    partial( addFour, 1 ).length.should.equal 3
+    partial( addFour, 1, 2 ).length.should.equal 2
+    partial( addFour, 1, 2, 3 ).length.should.equal 1
+    partial( addFour, 1, 2, 3, 4 ).length.should.equal 0
+    partial( addFour, 1, 2, 3, 4, 5 ).length.should.equal 0
+
+  it "should support repeated partial application", ->
+    partialAddFour_1_2 = partial addFour, 1, 2
+    partialAddFour_1_2_3_4 = partial partialAddFour_1_2, 3, 4
+    partialAddFour_1_2_3_4().should.equal 10
+    partialAddFour_1_2_3_4( "xyz" ).should.equal 10
+
+describe "partialConstructor", ->
   class Building
     constructor: (color, sqFt) ->
       @color = color
@@ -135,7 +159,7 @@ describe "partialConstructor", ->
     blHouse.buildingMethod.should.be.a "function"
     blHouse.houseMethod.should.be.a "function"
 
-  it "support repeated partial application for subclassing", ->
+  it "should support repeated partial application for subclassing", ->
     bgBlHouse = new BigBlueHouse 5
     bgBlHouse.should.be.instanceof House
     bgBlHouse.should.be.instanceof Building
@@ -155,7 +179,7 @@ describe "partialConstructor", ->
     famHouse.houseMethod.should.be.a "function"
 
 describe "unary", ->
-  add3 = (a, b, c) ->
+  add3OrLess = (a, b, c) ->
     b or= 0
     c or= 0
     a + b + c
@@ -164,13 +188,24 @@ describe "unary", ->
     parseIntUnary = unary parseInt
     ["1", "2", "3"].map( parseInt ).should.not.deep.equal [1, 2, 3]
     ["1", "2", "3"].map( parseIntUnary ).should.deep.equal [1, 2, 3]
-    unary( add3 )( 1, 2, 3 ).should.equal 1
+    unary( add3OrLess )( 1, 2, 3 ).should.equal 1
 
   it "should produce a function with length of 1", ->
-    add3.length.should.equal 3
-    unary( add3 ).length.should.equal 1
+    add3OrLess.length.should.equal 3
+    unary( add3OrLess ).length.should.equal 1
 
 describe "binary", ->
+  add3OrLess = (a, b, c) ->
+    b or= 0
+    c or= 0
+    a + b + c
+
+  it "should only pass one argument to the function", ->
+    binary( add3OrLess )( 1, 2, 3 ).should.equal 3
+
+  it "should produce a function with length of 1", ->
+    add3OrLess.length.should.equal 3
+    binary( add3OrLess ).length.should.equal 2
 
 describe "reverse", ->
   it "should reverse the order of arguments passed to a function", ->
@@ -190,3 +225,22 @@ describe "lastToFirst", ->
   it "should preserve the length of the function", ->
     lastToFirst( addFour ).length.should.equal addFour.length
 
+describe "rotate", ->
+  it "should rotate front arguments to the back", ->
+    rotate( addFour, 2 )( "a", "b", "c", "d", "e" ).should.equal "cdea"
+  it "should rotate back arguments to the front", ->
+    rotate( addFour, 2, -1 )( "a", "b", "c", "d", "e" ).should.equal "deab"
+
+describe "arity", ->
+  it "should return a function with length 'n' but pass through all arguments", ->
+    addArity2 = arity addAll, 2
+    addArity2.length.should.equal 2
+    addArity2( 1, 2 ).should.equal 3
+    addArity2( 1, 2, 3 ).should.equal 6
+
+describe "nAry", ->
+  it "should returna  function with length 'n' and pass through only first 'n' arguments", ->
+    addArity2 = nAry addAll, 2
+    addArity2.length.should.equal 2
+    addArity2( 1, 2 ).should.equal 3
+    addArity2( 1, 2, 3 ).should.equal 3

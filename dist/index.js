@@ -164,7 +164,7 @@
 
   swap = require("./swap");
 
-  flip = function(fn) {
+  module.exports = flip = function(fn) {
     return swap(fn, 0, 1);
   };
 
@@ -200,7 +200,7 @@
   rotate = require("./rotate");
 
   module.exports = lastToFirst = function(fn) {
-    return rotate(fn, 1, 1);
+    return rotate(fn, 1, -1);
   };
 
 }).call(this);
@@ -322,7 +322,7 @@
 
   arity = require("./arity");
 
-  partial = function(fn) {
+  module.exports = partial = function(fn) {
     var arg, func, i, len, outer, _i, _len;
     len = arguments.length - 1;
     outer = new Array(len);
@@ -367,7 +367,7 @@
       args = new Array(len);
       for (i = _i = arguments.length - 1; _i >= 0; i = _i += -1) {
         arg = arguments[i];
-        args[i + 1 - len] = arg;
+        args[len - i - 1] = arg;
       }
       return fn.apply(this, args);
     };
@@ -416,15 +416,16 @@
   module.exports = swap = function(fn, p1, p2) {
     var func;
     func = function() {
-      var arg, args, temp, _i, _len;
+      var a, arg, args, b, i, _i, _len;
       args = new Array(arguments.length);
-      for (_i = 0, _len = arguments.length; _i < _len; _i++) {
-        arg = arguments[_i];
+      for (i = _i = 0, _len = arguments.length; _i < _len; i = ++_i) {
+        arg = arguments[i];
         args[i] = arg;
       }
-      temp = args[p1];
-      args[p1] = args[p2];
-      args[p2] = temp;
+      a = args[p1];
+      b = args[p2];
+      args[p2] = a;
+      args[p1] = b;
       return fn.apply(this, args);
     };
     return arity(func, fn.length);
