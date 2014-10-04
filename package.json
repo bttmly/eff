@@ -1,0 +1,16 @@
+{
+  "name": "eff",
+  "version": "0.1.0",
+  "description": "function decorators",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --compilers coffee:coffee-script/register test.coffee -R spec"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^1.9.2",
+    "coffee-script": "^1.8.0",
+    "mocha": "^1.21.4"
+  }
+}
