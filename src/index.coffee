@@ -13,6 +13,7 @@ funcs =
   firstToLast: require "./first-to-last"
   lastToFirst: require "./last-to-first"
   demethodize: require "./demethodize"
+  copy: require "./copy"
 
 methods = {}
 
@@ -30,6 +31,4 @@ extend = ( target, source ) ->
 decorate = ( fn ) ->
   extend fn, methods
 
-extend decorate, funcs
-
-module.exports = decorate
+module.exports = extend decorate, funcs

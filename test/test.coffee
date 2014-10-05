@@ -1,6 +1,8 @@
 Function::bind or= require "function-bind"
 should = require( "chai" ).should()
 
+eff = require "../src/index.coffee"
+
 { curry,
   partial,
   partialConstructor,
@@ -13,7 +15,7 @@ should = require( "chai" ).should()
   binary,
   rotate,
   arity,
-  nAry } = require "../src/index.coffee"
+  nAry } = eff
 
 addTwo = (a, b) ->
   a + b
@@ -34,6 +36,50 @@ map = ( arr, cb ) ->
 
 filter = ( arr, cb ) ->
   item for item, i in arr when cb item, i arr
+
+describe "decorate()", ->
+  addAll = undefined
+  dec = undefined
+
+  beforeEach ->
+    addAll = (a, b, c, d) ->
+      t = arguments[0]
+      t += n for n, i in arguments when i > 0
+      t
+    dec = eff addAll
+
+  it "should have a working curry method", ->
+    dec.curry()(1).should.be.a "function"
+    dec.curry()(1)(2).should.be.a "function"
+    dec.curry()(1)(2)(3).should.be.a "function"
+    dec.curry()(1)(2)(3)(4).should.equal 10
+
+  it "should have a working partial method", ->
+    dec.partial(1, 2).should.be.a "function"
+    dec.partial(1, 2)(3, 4).should.equal 10
+    dec.partial(1, 2)(3, 4, 5).should.equal 15
+
+  it "should have a working flip method", ->
+    dec.flip()("a", "b").should.equal "ba"
+    dec.flip()("a", "b", "c").should.equal "bac"
+
+  it "should have a working swap method", ->
+    dec.swap(1, 2)('a', 'b', 'c', 'd').should.equal 'acbd'
+
+  it 'should have a working reverse method', ->
+    dec.reverse()('a', 'b', 'c', 'd').should.equal 'dcba'
+
+  it 'should have a working firstToLast method', ->
+    dec.firstToLast()('a', 'b', 'c', 'd').should.equal 'bcda'
+
+  it 'should have a working lastToFirst method', ->
+    dec.lastToFirst()('a', 'b', 'c', 'd').should.equal 'dabc'
+
+  it 'should have a working unary method', ->
+    dec.unary()(1, 2).should.equal 1
+
+  it 'should have a working binary method', ->
+    dec.binary()(1, 2, 3).should.equal 3
 
 
 describe "curry()", ->
