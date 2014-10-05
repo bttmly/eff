@@ -7,7 +7,9 @@
     "test": "mocha --compilers coffee:coffee-script/register ./test/test.coffee -R spec",
     "compile": "coffee --output lib --compile src",
     "build": "npm run compile; browserify ./lib/index.js -s eff -o ./dist/index.js",
-    "lint": "coffeelint ./src/*.coffee"
+    "lint": "coffeelint ./src/*.coffee",
+    "max5": "echo 'module.exports = require \"./n-ary-5\"' > ./src/n-ary.coffee; echo 'module.exports = require \"./arity-5\"' > ./src/arity.coffee;",
+    "max10": "echo 'module.exports = require \"./n-ary-10\"' > ./src/n-ary.coffee; echo 'module.exports = require \"./arity-10\"' > ./src/arity.coffee;"
   },
   "browserify": {
     "transform": [

@@ -1,5 +1,6 @@
 # coffeelint: disable=cyclomatic_complexity
 
+# borrowed from Ramda
 module.exports = arity10 = ( fn, n ) ->
   n = 0 unless n > 0
   if n is 0

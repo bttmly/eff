@@ -25,7 +25,9 @@ addFour = (a, b, c, d) ->
   a + b + c + d
 
 addAll = (a, b, c, d) ->
-  [].slice.call( arguments ).reduce ( s, t ) -> s + t
+  t = 0
+  t += n for n in arguments
+  t
 
 map = ( arr, cb ) ->
   cb item, i, arr for item, i in arr

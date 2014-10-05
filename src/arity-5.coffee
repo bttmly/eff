@@ -1,3 +1,4 @@
+# borrowed from Ramda
 module.exports = arity5 = ( fn, n ) ->
   n = 0 unless n > 0
   if n is 0
