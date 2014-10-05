@@ -131,12 +131,12 @@ describe "partialConstructor", ->
       @bedrooms = bedrooms
     houseMethod: ->
 
-  BlueHouse = partialConstructor House, "blue"
-  BigBlueHouse = partialConstructor BlueHouse, 4000
-  BigBlueFamilyHouse = partialConstructor BigBlueHouse, 6
+  BlueHouse = partialConstructor( House, "blue" )
+  BigBlueHouse = partialConstructor( BlueHouse, 4000 )
+  BigBlueFamilyHouse = partialConstructor( BigBlueHouse, 6 )
 
   it "should work properly called on a constructor once", ->
-    whtBldg = new WhiteBuilding 3000
+    whtBldg = new WhiteBuilding( 3000 )
     whtBldg.should.be.instanceof Building
     whtBldg.color.should.equal "white"
     whtBldg.sqFt.should.equal 3000
@@ -150,7 +150,7 @@ describe "partialConstructor", ->
     bgWhtBldg.buildingMethod.should.be.a "function"
 
   it "should support subclassing", ->
-    blHouse = new BlueHouse 1500, 3
+    blHouse = new BlueHouse( 1500, 3 )
     blHouse.should.be.instanceof House
     blHouse.should.be.instanceof Building
     blHouse.color.should.equal "blue"
@@ -160,7 +160,7 @@ describe "partialConstructor", ->
     blHouse.houseMethod.should.be.a "function"
 
   it "should support repeated partial application for subclassing", ->
-    bgBlHouse = new BigBlueHouse 5
+    bgBlHouse = new BigBlueHouse( 5 )
     bgBlHouse.should.be.instanceof House
     bgBlHouse.should.be.instanceof Building
     bgBlHouse.color.should.equal "blue"

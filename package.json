@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script/register ./test/test.coffee -R spec",
     "compile": "coffee --output lib --compile src",
-    "build": "npm run compile; browserify ./lib/index.js -s eff -o ./dist/index.js"
+    "build": "npm run compile; browserify ./lib/index.js -s eff -o ./dist/index.js",
+    "lint": "coffeelint ./src/*.coffee"
   },
   "browserify": {
     "transform": [
@@ -20,6 +21,7 @@
     "chai": "^1.9.2",
     "coffee-script": "^1.8.0",
     "coffeeify": "^0.7.0",
+    "coffeelint": "^1.6.0",
     "function-bind": "^1.0.1",
     "mocha": "^1.21.4"
   }

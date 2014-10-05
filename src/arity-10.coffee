@@ -1,3 +1,5 @@
+# coffeelint: disable=cyclomatic_complexity
+
 module.exports = arity10 = ( fn, n ) ->
   n = 0 unless n > 0
   if n is 0
@@ -24,3 +26,5 @@ module.exports = arity10 = ( fn, n ) ->
     (a, b, c, d, e, f, g, h, i, j) -> fn.apply this, arguments
   else
     throw new RangeError "Function must take 10 or fewer arguments"
+
+# coffeelint: enable=cyclomatic_complexity
