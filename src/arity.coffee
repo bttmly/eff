@@ -1,1 +1,1 @@
-module.exports = require "./arity-5"
+module.exports = require "./arity-10"
