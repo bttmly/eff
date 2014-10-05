@@ -2,7 +2,7 @@
   "name": "eff",
   "version": "0.1.0",
   "description": "function decorators",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script/register ./test/test.coffee -R spec",
     "compile": "coffee -o lib -cb src",
