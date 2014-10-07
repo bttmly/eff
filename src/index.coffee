@@ -1,3 +1,12 @@
+extend = ( target, source ) ->
+  target[key] = source[key] for key of source
+  target
+
+module.exports = decorate = ( fn ) ->
+  extend( fn, methods )
+
+methods = {}
+
 funcs =
   curry: require "./curry"
   arity: require "./arity"
@@ -15,20 +24,12 @@ funcs =
   demethodize: require "./demethodize"
   copy: require "./copy"
 
-methods = {}
-
 Object.keys( funcs ).forEach ( key ) ->
-  methods[key] = ->
-    args = new Array arguments.length + 1
+  methods[key] = decorate ->
+    args = new Array( arguments.length + 1 )
     args[0] = this
     args[i + 1] = arg for arg, i in arguments
-    funcs[key].apply null, args
+    ret = funcs[key].apply null, args
+    if typeof ret is "function" then decorate( ret ) else ret
 
-extend = ( target, source ) ->
-  target[key] = source[key] for key of source
-  target
-
-decorate = ( fn ) ->
-  extend fn, methods
-
-module.exports = extend decorate, funcs
+extend( decorate, funcs )

@@ -1,5 +1,14 @@
 Function::bind or= require "function-bind"
-should = require( "chai" ).should()
+chai = require "chai"
+should = chai.should()
+{ utils, Assertion } = chai
+
+###
+utils.addMethod(chai.Assertion.prototype, 'foo', function (str) {
+  var obj = utils.flag(this, 'object');
+  new chai.Assertion(obj).to.be.equal(str);
+});
+###
 
 eff = require "../src/index.coffee"
 
@@ -16,6 +25,13 @@ eff = require "../src/index.coffee"
   rotate,
   arity,
   nAry } = eff
+
+isEff = do ->
+  effn = eff ->
+  ( fn ) ->
+    for key, val of effn
+      return false if fn[key] isnt val
+    true
 
 addTwo = (a, b) ->
   a + b
@@ -37,7 +53,7 @@ map = ( arr, cb ) ->
 filter = ( arr, cb ) ->
   item for item, i in arr when cb item, i arr
 
-describe "decorate()", ->
+describe "eff()", ->
   addAll = undefined
   dec = undefined
 
@@ -53,33 +69,42 @@ describe "decorate()", ->
     dec.curry()(1)(2).should.be.a "function"
     dec.curry()(1)(2)(3).should.be.a "function"
     dec.curry()(1)(2)(3)(4).should.equal 10
+    isEff( dec.curry() ).should.equal true
 
   it "should have a working partial method", ->
     dec.partial(1, 2).should.be.a "function"
     dec.partial(1, 2)(3, 4).should.equal 10
     dec.partial(1, 2)(3, 4, 5).should.equal 15
+    isEff( dec.partial(1) ).should.equal true
 
   it "should have a working flip method", ->
     dec.flip()("a", "b").should.equal "ba"
     dec.flip()("a", "b", "c").should.equal "bac"
+    isEff( dec.flip() ).should.equal true
 
   it "should have a working swap method", ->
     dec.swap(1, 2)('a', 'b', 'c', 'd').should.equal 'acbd'
+    isEff( dec.swap(1, 2) ).should.equal true
 
   it 'should have a working reverse method', ->
     dec.reverse()('a', 'b', 'c', 'd').should.equal 'dcba'
+    isEff( dec.reverse() ).should.equal true
 
   it 'should have a working firstToLast method', ->
     dec.firstToLast()('a', 'b', 'c', 'd').should.equal 'bcda'
+    isEff( dec.firstToLast() ).should.equal true
 
   it 'should have a working lastToFirst method', ->
     dec.lastToFirst()('a', 'b', 'c', 'd').should.equal 'dabc'
+    isEff( dec.lastToFirst() ).should.equal true
 
   it 'should have a working unary method', ->
     dec.unary()(1, 2).should.equal 1
+    isEff( dec.unary() ).should.equal true
 
   it 'should have a working binary method', ->
     dec.binary()(1, 2, 3).should.equal 3
+    isEff( dec.binary() ).should.equal true
 
 
 describe "curry()", ->
@@ -98,16 +123,28 @@ describe "curry()", ->
 
   it "should return a function always", ->
     curry( addFour, 1, 2, 3, 4 ).should.be.a "function"
+    isEff( curry( addFour, 1, 2, 3, 4 ) ).should.equal true
     curry( addFour, 1, 2, 3, 4 )().should.equal 10
     curry( addFour, 1, 2, 3, 4, 5 ).should.be.a "function"
+    isEff( curry( addFour, 1, 2, 3, 4, 5 ) ).should.equal true
     curry( addFour, 1, 2, 3, 4, 5 )().should.equal 10
 
   it "should return functions which continue to return functions until their arguments are filled", ->
     curryAddFour.should.be.a "function"
+    isEff( curryAddFour ).should.equal true
+
     curryAddFour_1.should.be.a "function"
+    isEff( curryAddFour_1 ).should.equal true
+
     curryAddFour_1_2.should.be.a "function"
+    isEff( curryAddFour_1_2 ).should.equal true
+
     curryAddFour_1_2_3.should.be.a "function"
+    isEff( curryAddFour_1_2_3 ).should.equal true
+
     curryAddFour_1_2_5.should.be.a "function"
+    isEff( curryAddFour_1_2_5 ).should.equal true
+
     ten = curryAddFour_1_2_3(4)
     fourteen = curry(addFour)(2)(3)(4)(5)
     fifteen = curryAddFour_1_2_5(7)

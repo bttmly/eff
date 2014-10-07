@@ -1,4 +1,5 @@
 arity = require "./arity"
+eff = require "./"
 
 module.exports = curry = ( fn ) ->
   len = arguments.length - 1
@@ -14,4 +15,4 @@ module.exports = curry = ( fn ) ->
       fn.apply this, args
     else
       curry.apply null, [fn].concat args
-  arity curried, fn.length - len
+  eff arity curried, fn.length - len
