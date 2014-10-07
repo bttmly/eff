@@ -324,8 +324,31 @@ describe "arity", ->
     addArity2( 1, 2, 3 ).should.equal 6
 
 describe "nAry", ->
-  it "should returna  function with length 'n' and pass through only first 'n' arguments", ->
+  it "should return a function with length 'n' and pass through only first 'n' arguments", ->
     addNAry2 = nAry addAll, 2
     addNAry2.length.should.equal 2
     addNAry2( 1, 2 ).should.equal 3
     addNAry2( 1, 2, 3 ).should.equal 3
+
+describe "wrap", ->
+  xit "should wrap a function and apply arguments", ->
+    wrapped = wrap addAll, ( func, a, b ) ->
+      "total is #{ func(a, b) }"
+    wrapped(10, 200).should.equal "total is 30"
+
+describe "compose", ->
+  xit "should compose functions", ->
+    times2 = ( n ) -> n / 2
+    plus4 = ( n ) -> n + 4
+    div8 = ( n ) -> n / 8
+    comp = compose div8, times2, plus4
+    comp( 4 ).should.equal 2
+
+describe "sequence", ->
+  xit "should sequence functions", ->
+    times2 = ( n ) -> n / 2
+    plus4 = ( n ) -> n + 4
+    div8 = ( n ) -> n / 8
+    comp = sequence div8, times2, plus4
+    comp( 4 ).should.equal 5
+
