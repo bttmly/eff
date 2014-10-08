@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "description": "function decorators",
   "main": "./lib/index.js",
+  "respository": "https://github.com/nickb1080/eff.git",
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script/register ./test/test.coffee -R spec",
     "compile": "coffee -o lib -cb src",
