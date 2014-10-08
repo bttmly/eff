@@ -24,6 +24,8 @@ eff = require "../src/index.coffee"
   binary,
   rotate,
   arity,
+  sequence,
+  compose
   nAry } = eff
 
 isEff = do ->
@@ -292,6 +294,9 @@ describe "binary", ->
     add3OrLess.length.should.equal 3
     binary( add3OrLess ).length.should.equal 2
 
+  it "should produce an eff'd function", ->
+
+
 describe "reverse", ->
   it "should reverse the order of arguments passed to a function", ->
     reverse( addFour )( "a", "b", "c", "d" ).should.equal "dcba"
@@ -349,6 +354,6 @@ describe "sequence", ->
     times2 = ( n ) -> n / 2
     plus4 = ( n ) -> n + 4
     div8 = ( n ) -> n / 8
-    comp = sequence div8, times2, plus4
-    comp( 4 ).should.equal 5
+    seq = sequence div8, times2, plus4
+    seq( 4 ).should.equal 5
 

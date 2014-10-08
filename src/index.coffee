@@ -23,6 +23,8 @@ funcs =
   lastToFirst: require "./last-to-first"
   demethodize: require "./demethodize"
   copy: require "./copy"
+  # compose: require "./compose"
+  # sequence: require "./sequence"
 
 Object.keys( funcs ).forEach ( key ) ->
   methods[key] = decorate ->
