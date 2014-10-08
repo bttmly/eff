@@ -2,9 +2,7 @@
 
 Function decorators
 
-### `eff(Function fn) -> Function`
-
-### `eff.wrap(Function fn) -> Function`
+#### `eff(Function fn) -> Function`
 
 ## Methods
 **All methods return functions.**
