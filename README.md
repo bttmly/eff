@@ -21,9 +21,10 @@ Equivalent to `eff.nAry(fn, 1)`.
 Equivalent to `eff.nAry(fn, 2)`.
 
 ### Argument-Shifting Methods
-#### `eff.flip(Function fn)`
-
 #### `eff.swap(Function fn, Number pos1, Number pos2)`
+
+#### `eff.flip(Function fn)`
+Equivalent to `eff.swap(fn, 0, 1)`
 
 #### `eff.rotate(Function fn, Number amount, [Number dir])`
 
