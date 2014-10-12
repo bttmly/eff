@@ -26,6 +26,6 @@
     "coffeeify": "^0.7.0",
     "coffeelint": "^1.6.0",
     "function-bind": "^1.0.1",
-    "mocha": "^1.21.4"
+    "mocha": "^1.21.5"
   }
 }
